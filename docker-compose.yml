@@ -1,0 +1,48 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:15-alpine
+    environment:
+      POSTGRES_USER: ${DATABASE_USER:-nnomm_user}
+      POSTGRES_PASSWORD: ${DATABASE_PASSWORD:-nnomm_pass}
+      POSTGRES_DB: nnomm_deals
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U nnomm_user -d nnomm_deals"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  app-instance-1:
+    build: .
+    ports:
+      - "8080:8080"
+    environment:
+      - PORT=8080
+      - DATABASE_URL=jdbc:postgresql://postgres:5432/nnomm_deals
+      - DATABASE_USER=${DATABASE_USER:-nnomm_user}
+      - DATABASE_PASSWORD=${DATABASE_PASSWORD:-nnomm_pass}
+      - JWT_SECRET=${JWT_SECRET:-secret123}
+      - WEBHOOK_SECRET=${WEBHOOK_SECRET:-webhook123}
+      - CLAIM_TTL_SECONDS=${CLAIM_TTL_SECONDS:-600}
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  app-instance-2:
+    build: .
+    ports:
+      - "8081:8081"
+    environment:
+      - PORT=8081
+      - DATABASE_URL=jdbc:postgresql://postgres:5432/nnomm_deals
+      - DATABASE_USER=${DATABASE_USER:-nnomm_user}
+      - DATABASE_PASSWORD=${DATABASE_PASSWORD:-nnomm_pass}
+      - JWT_SECRET=${JWT_SECRET:-secret123}
+      - WEBHOOK_SECRET=${WEBHOOK_SECRET:-webhook123}
+      - CLAIM_TTL_SECONDS=${CLAIM_TTL_SECONDS:-600}
+    depends_on:
+      postgres:
+        condition: service_healthy
