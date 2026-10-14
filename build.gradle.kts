@@ -22,6 +22,7 @@ dependencies {
     implementation("io.ktor:ktor-server-content-negotiation")
     implementation("io.ktor:ktor-serialization-jackson")
     implementation("io.ktor:ktor-server-auth")
+    implementation("com.auth0:java-jwt:4.4.0")
 
     // Database & Migrations
     implementation("org.postgresql:postgresql:42.7.1")
