@@ -11,17 +11,26 @@ import javax.sql.DataSource
 object DatabaseFactory {
     private var dataSource: DataSource? = null
 
-    fun init(config: AppConfig, customDataSource: DataSource? = null) {
-        val ds = customDataSource ?: createHikariDataSource(config)
+    fun init(
+        jdbcUrl: String = AppConfig.databaseUrl,
+        username: String = AppConfig.databaseUser,
+        password: String = AppConfig.databasePassword,
+        customDataSource: DataSource? = null
+    ) {
+        val ds = customDataSource ?: createHikariDataSource(jdbcUrl, username, password)
         dataSource = ds
         runFlyway(ds)
     }
 
-    private fun createHikariDataSource(config: AppConfig): HikariDataSource {
+    fun init(config: AppConfig) {
+        init(config.databaseUrl, config.databaseUser, config.databasePassword)
+    }
+
+    private fun createHikariDataSource(jdbcUrl: String, username: String, password: String): HikariDataSource {
         val hikariConfig = HikariConfig().apply {
-            jdbcUrl = config.databaseUrl
-            username = config.databaseUser
-            password = config.databasePassword
+            this.jdbcUrl = jdbcUrl
+            this.username = username
+            this.password = password
             driverClassName = "org.postgresql.Driver"
             maximumPoolSize = 25
             minimumIdle = 5
