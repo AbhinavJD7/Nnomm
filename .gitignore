@@ -1,5 +1,8 @@
 .gradle/
 build/
+bin/
+INTERVIEW_PREP.md
+interview_prep.md
 !gradle/wrapper/gradle-wrapper.jar
 !gradle/wrapper/gradle-wrapper.properties
 
