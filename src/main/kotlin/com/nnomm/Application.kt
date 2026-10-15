@@ -7,6 +7,7 @@ import com.nnomm.config.DatabaseFactory
 import com.nnomm.domain.ApiException
 import com.nnomm.domain.ErrorCode
 import com.nnomm.domain.ErrorResponse
+import com.nnomm.routes.claimRoutes
 import com.nnomm.routes.dealRoutes
 import io.ktor.serialization.jackson.*
 import io.ktor.server.application.*
@@ -57,5 +58,6 @@ fun Application.module(initDatabase: Boolean = true) {
             call.respondText("Service is running!")
         }
         dealRoutes()
+        claimRoutes()
     }
 }
