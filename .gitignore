@@ -3,6 +3,7 @@ build/
 bin/
 INTERVIEW_PREP.md
 interview_prep.md
+nnomm_take_home_assignment.pdf
 !gradle/wrapper/gradle-wrapper.jar
 !gradle/wrapper/gradle-wrapper.properties
 

@@ -21,6 +21,9 @@ dependencies {
     implementation("io.ktor:ktor-server-netty-jvm")
     implementation("io.ktor:ktor-server-content-negotiation")
     implementation("io.ktor:ktor-serialization-jackson")
+    implementation("io.ktor:ktor-server-status-pages")
+    implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.16.1")
+    implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.16.1")
     implementation("io.ktor:ktor-server-auth")
     implementation("com.auth0:java-jwt:4.4.0")
 
@@ -49,4 +52,9 @@ kotlin {
 
 tasks.test {
     useJUnitPlatform()
+    testLogging {
+        events("passed", "skipped", "failed")
+        showStandardStreams = true
+    }
 }
+
