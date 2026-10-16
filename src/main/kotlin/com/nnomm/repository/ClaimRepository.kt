@@ -130,6 +130,8 @@ object ClaimRepository {
         }
     }
 
+    suspend fun findById(claimId: UUID): ClaimResponse? = findClaimWithDealInfo(claimId)?.first
+
     private fun ResultSet.toClaimResponse(): ClaimResponse {
         val rawStatus = getString("status")
         val expiresAt = getTimestamp("expires_at").toInstant()

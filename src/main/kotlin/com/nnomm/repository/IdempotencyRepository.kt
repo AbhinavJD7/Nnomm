@@ -87,18 +87,25 @@ object IdempotencyRepository {
             }
         }
 
-        // Key doesn't exist: atomically insert as IN_PROGRESS
+        // Key doesn't exist: atomically insert as IN_PROGRESS with ON CONFLICT guard
         val insertSql = """
             INSERT INTO idempotency_records (customer_id, idempotency_key, deal_id, quantity, status, created_at, updated_at)
-            VALUES (?, ?, ?, ?, 'IN_PROGRESS', NOW(), NOW());
+            VALUES (?, ?, ?, ?, 'IN_PROGRESS', NOW(), NOW())
+            ON CONFLICT (customer_id, idempotency_key) DO NOTHING;
         """.trimIndent()
-        conn.prepareStatement(insertSql).use { stmt ->
+        val inserted = conn.prepareStatement(insertSql).use { stmt ->
             stmt.setObject(1, customerId)
             stmt.setString(2, key)
             stmt.setObject(3, dealId)
             stmt.setInt(4, quantity)
-            stmt.executeUpdate()
+            stmt.executeUpdate() > 0
         }
+
+        if (!inserted) {
+            // Another concurrent transaction inserted the key just now; re-check state
+            return acquireOrReplayInTransaction(conn, customerId, key, dealId, quantity)
+        }
+
         return KeyAcquisitionResult.Acquired
     }
 
