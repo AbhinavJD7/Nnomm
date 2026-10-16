@@ -9,6 +9,7 @@ import com.nnomm.domain.ErrorCode
 import com.nnomm.domain.ErrorResponse
 import com.nnomm.routes.claimRoutes
 import com.nnomm.routes.dealRoutes
+import com.nnomm.routes.webhookRoutes
 import io.ktor.serialization.jackson.*
 import io.ktor.server.application.*
 import io.ktor.server.engine.*
@@ -59,5 +60,6 @@ fun Application.module(initDatabase: Boolean = true) {
         }
         dealRoutes()
         claimRoutes()
+        webhookRoutes()
     }
 }
