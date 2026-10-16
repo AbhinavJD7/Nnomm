@@ -10,6 +10,7 @@ import com.nnomm.domain.ErrorResponse
 import com.nnomm.routes.claimRoutes
 import com.nnomm.routes.dealRoutes
 import com.nnomm.routes.webhookRoutes
+import com.nnomm.worker.ClaimExpiryWorker
 import io.ktor.serialization.jackson.*
 import io.ktor.server.application.*
 import io.ktor.server.engine.*
@@ -24,12 +25,17 @@ fun main() {
         .start(wait = true)
 }
 
-fun Application.module(initDatabase: Boolean = true) {
+fun Application.module(initDatabase: Boolean = true, startWorker: Boolean = true) {
     if (initDatabase) {
         DatabaseFactory.init(AppConfig)
     }
 
+    val workerJob = if (startWorker) {
+        ClaimExpiryWorker.start(this)
+    } else null
+
     environment.monitor.subscribe(ApplicationStopped) {
+        workerJob?.cancel()
         if (initDatabase) {
             DatabaseFactory.close()
         }
