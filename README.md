@@ -6,7 +6,7 @@ The system is designed and verified to run in a distributed multi-instance envir
 
 ---
 
-## 🚀 Quick Start
+## Quick Start
 
 ### 1. Prerequisites
 - **Docker Desktop** (Engine 20.10+ / Docker Compose v2)
